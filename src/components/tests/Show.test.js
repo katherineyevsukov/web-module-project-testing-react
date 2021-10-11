@@ -1,5 +1,5 @@
 import React from "react";
-import { queryAllByTestId, render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import Show from "./../Show";
@@ -10,7 +10,7 @@ const testShow = {
   name: "Test Show",
   seasons: [
     { id: 1, name: "Season 2", episodes: [] },
-    { id: 1, name: "Season 2", episodes: [] },
+    { id: 2, name: "Season 2", episodes: [] },
   ],
 };
 
@@ -31,9 +31,37 @@ test("renders same number of options as seasons are passed in", () => {
   expect(options).toHaveLength(2);
 });
 
-test("handleSelect is called when an season is selected", () => {});
+test("handleSelect is called when an season is selected", async () => {
+    // const mockHandleSelect = jest.fn()
+    // render(<Show show={testShow} selectedSeason={'none'} handleSelect={mockHandleSelect} />)
+    // const selection = screen.getByRole('combobox')
+    // userEvent.selectOptions(selection, ["Season 2"])
+    // await waitFor(() => {expect(mockHandleSelect).toBeCalledTimes(1)})
 
-test("component renders when no seasons are selected and when rerenders with a season passed in", () => {});
+    const mockHandleSelect=jest.fn() 
+    console.log(mockHandleSelect)
+
+    render(<Show show={testShow} selectedSeason={'none'} handleSelect={mockHandleSelect}/>);
+
+   const select = screen.getByLabelText(/select a season/i) 
+   const options = screen.getAllByTestId("season-option")
+   userEvent.selectOptions(select, options[0])
+
+   await waitFor(() =>{
+    expect(mockHandleSelect).toBeCalledTimes(1)
+   })
+
+});
+
+test("component renders when no seasons are selected and when rerenders with a season passed in", () => {
+    const { rerender } = render(<Show show={testShow} selectedSeason={"none"}/>)
+    let episodes = screen.queryByTestId("episodes-container")
+    expect(episodes).toBeNull()
+
+    rerender(<Show show={testShow} selectedSeason={1} />)
+    episodes = screen.queryByTestId("episodes-container")
+    expect(episodes).not.toBeNull()
+});
 
 //Tasks:
 //1. Build an example data structure that contains the show data in the correct format. A show should contain a name, a summary and an array of seasons, each with a id, name and (empty) list of episodes within them. Use console.logs within the client code if you need to to verify the structure of show data.
