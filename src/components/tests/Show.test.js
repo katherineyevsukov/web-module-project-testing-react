@@ -8,24 +8,27 @@ const testShow = {
   //add in approprate test data structure here.
   id: 123,
   name: "Test Show",
-  seasons: [{ id: 1, name: "Season 2", episodes: [] }],
+  seasons: [
+    { id: 1, name: "Season 2", episodes: [] },
+    { id: 1, name: "Season 2", episodes: [] },
+  ],
 };
 
 test("renders testShow and no selected Season without errors", () => {
-    render(<Show show={testShow} selectedSeason={'none'} />)
+  render(<Show show={testShow} selectedSeason={"none"} />);
 });
 
 test("renders Loading component when prop show is null", () => {
-    render(<Show show={null} /> )
-    const loader = screen.queryByTestId("loading-container")
-    expect(loader).toBeInTheDocument()
+  render(<Show show={null} />);
+  const loader = screen.queryByTestId("loading-container");
+  expect(loader).toBeInTheDocument();
 });
 
 test("renders same number of options as seasons are passed in", () => {
-    render(<Show show={testShow} selectedSeason={'none'}/>)
+  render(<Show show={testShow} selectedSeason={"none"} />);
 
-    const options = screen.queryAllByTestId("season-option")
-    expect(options).toHaveLength(1)
+  const options = screen.queryAllByTestId("season-option");
+  expect(options).toHaveLength(2);
 });
 
 test("handleSelect is called when an season is selected", () => {});
