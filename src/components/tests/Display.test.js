@@ -1,15 +1,31 @@
+import React from 'react';
+import Display from "./../Display";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { testShow } from "../tests/Show.test"
+import fetchShow from "./../../api/fetchShow";
 
 
+jest.mock("./../../api/fetchShow")
 
 
+test("renders without props passed in", () => {
+    render(<Display />)
+})
 
+test('when fetch button is pressed, show component displays', async () => {
+    fetchShow.mockResolvedValueOnce(testShow)
 
+    render(<Display />)
+    const button = screen.getByRole("button")
+    // act(() => {userEvent.click(button)});
+    userEvent.click(button)
 
-
-
-
-
-
+    await waitFor(() => {
+        const showComp = screen.queryByTestId("show-container")
+        expect(showComp).not.toBeNull()
+    })
+})
 
 
 

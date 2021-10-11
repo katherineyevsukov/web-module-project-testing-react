@@ -4,13 +4,14 @@ import userEvent from "@testing-library/user-event";
 
 import Show from "./../Show";
 
-const testShow = {
+export const testShow = {
   //add in approprate test data structure here.
   id: 123,
   name: "Test Show",
   seasons: [
     { id: 1, name: "Season 2", episodes: [] },
     { id: 2, name: "Season 2", episodes: [] },
+    { id: 3, name: "Season 2", episodes: [] },
   ],
 };
 
@@ -28,7 +29,7 @@ test("renders same number of options as seasons are passed in", () => {
   render(<Show show={testShow} selectedSeason={"none"} />);
 
   const options = screen.queryAllByTestId("season-option");
-  expect(options).toHaveLength(2);
+  expect(options).toHaveLength(3);
 });
 
 test("handleSelect is called when an season is selected", async () => {
@@ -39,7 +40,6 @@ test("handleSelect is called when an season is selected", async () => {
     // await waitFor(() => {expect(mockHandleSelect).toBeCalledTimes(1)})
 
     const mockHandleSelect=jest.fn() 
-    console.log(mockHandleSelect)
 
     render(<Show show={testShow} selectedSeason={'none'} handleSelect={mockHandleSelect}/>);
 
@@ -58,9 +58,10 @@ test("component renders when no seasons are selected and when rerenders with a s
     let episodes = screen.queryByTestId("episodes-container")
     expect(episodes).toBeNull()
 
-    rerender(<Show show={testShow} selectedSeason={1} />)
+    rerender(<Show show={testShow} selectedSeason={2} />)
     episodes = screen.queryByTestId("episodes-container")
     expect(episodes).not.toBeNull()
+
 });
 
 //Tasks:
