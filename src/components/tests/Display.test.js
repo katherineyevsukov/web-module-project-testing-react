@@ -1,33 +1,56 @@
-import React from 'react';
+import React from "react";
 import Display from "./../Display";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { testShow } from "../tests/Show.test"
+import { testShow } from "../tests/Show.test";
 import fetchShow from "./../../api/fetchShow";
 
-
-jest.mock("./../../api/fetchShow")
-
+jest.mock("./../../api/fetchShow");
 
 test("renders without props passed in", () => {
-    render(<Display />)
-})
+  render(<Display />);
+});
 
-test('when fetch button is pressed, show component displays', async () => {
+test("when fetch button is pressed, show component displays", async () => {
+  fetchShow.mockResolvedValueOnce(testShow);
+
+  render(<Display />);
+  const button = screen.getByRole("button");
+  // act(() => {userEvent.click(button)});
+  userEvent.click(button);
+
+  await waitFor(() => {
+    const showComp = screen.queryByTestId("show-container");
+    expect(showComp).not.toBeNull();
+  });
+});
+
+test('when fetch is pressed, select options equals amount of seasons in test data', async () => {
     fetchShow.mockResolvedValueOnce(testShow)
 
     render(<Display />)
     const button = screen.getByRole("button")
-    // act(() => {userEvent.click(button)});
     userEvent.click(button)
 
     await waitFor(() => {
-        const showComp = screen.queryByTestId("show-container")
-        expect(showComp).not.toBeNull()
+        const select = screen.queryAllByTestId("season-option")
+        expect(select).toHaveLength(3)
     })
 })
 
+test('display funciton is called when passed in as a prop', async () => {
+    fetchShow.mockResolvedValueOnce(testShow)
+    const mockDisplayFunc = jest.fn()
 
+    render(<Display displayFunc={mockDisplayFunc} />)
+
+    const button = screen.getByRole("button")
+    userEvent.click(button)
+
+    await waitFor(() => {
+        expect(mockDisplayFunc).toBeCalledTimes(1)
+    })
+})
 
 ///Tasks:
 //1. Add in nessisary imports and values to establish the testing suite.
